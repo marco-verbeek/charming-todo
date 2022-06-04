@@ -39,8 +39,12 @@ func (m Model) collectHelpBindings() []key.Binding {
 	bindings := []key.Binding{}
 
 	bindings = append(bindings, k.Quit)
+
 	bindings = append(bindings, k.TabNew)
 	bindings = append(bindings, k.TabClose)
+
+	bindings = append(bindings, k.TabNext)
+	bindings = append(bindings, k.TabPrev)
 
 	return bindings
 }

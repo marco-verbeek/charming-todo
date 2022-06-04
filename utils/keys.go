@@ -27,11 +27,11 @@ var Keys = KeyMap{
 		key.WithHelp("ctrl+w", "close tab"),
 	),
 	TabNext: key.NewBinding(
-		key.WithKeys("ctrl+tab"),
-		key.WithHelp("ctrl+tab", "next tab"),
+		key.WithKeys("right", "l"),
+		key.WithHelp("/l", "next tab"),
 	),
 	TabPrev: key.NewBinding(
-		key.WithKeys("ctrl+shift+tab"),
-		key.WithHelp("ctrl+shift+tab", "previous tab"),
+		key.WithKeys("left", "h"),
+		key.WithHelp("/h", "previous tab"),
 	),
 }
