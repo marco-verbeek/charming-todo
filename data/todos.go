@@ -12,6 +12,8 @@ type TodoItem struct {
 	Checked     bool
 }
 
+func (i TodoItem) FilterValue() string { return i.Description }
+
 func FetchTodoList() TodoList {
 	return TodoList{
 		Title:     "My Todo",

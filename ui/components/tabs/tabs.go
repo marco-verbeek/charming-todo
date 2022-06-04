@@ -62,14 +62,16 @@ func (m *Model) AddTab() int {
 	return m.CurrTabId
 }
 
-func (m *Model) CloseCurrentTab() {
+func (m *Model) CloseCurrentTab() int {
 	if len(*m.lists) > 0 {
 		(*m.lists)[m.CurrTabId].Displayed = false
-		m.PrevTab()
+		return m.PrevTab()
 	}
+
+	return 0
 }
 
-func (m *Model) NextTab() {
+func (m *Model) NextTab() int {
 	// start at next element in array
 	loopIdx := m.CurrTabId + 1
 	totalLoops := 0
@@ -91,9 +93,10 @@ func (m *Model) NextTab() {
 	}
 
 	m.CurrTabId = loopIdx
+	return m.CurrTabId
 }
 
-func (m *Model) PrevTab() {
+func (m *Model) PrevTab() int {
 	// start at prev element in array
 	loopIdx := m.CurrTabId - 1
 	totalLoops := 0
@@ -115,4 +118,5 @@ func (m *Model) PrevTab() {
 	}
 
 	m.CurrTabId = loopIdx
+	return m.CurrTabId
 }
