@@ -15,8 +15,8 @@ type KeyMap struct {
 
 var Keys = KeyMap{
 	Quit: key.NewBinding(
-		key.WithKeys("ctrl+c", "esc"),
-		key.WithHelp("esc", "quit"),
+		key.WithKeys("ctrl+c", "esc", "q"),
+		key.WithHelp("q", "quit"),
 	),
 	TabNew: key.NewBinding(
 		key.WithKeys("ctrl+n"),
