@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"charming-todo/data"
 	"charming-todo/ui/components/help"
 	"charming-todo/ui/components/tabs"
 	"charming-todo/utils"
@@ -11,15 +12,25 @@ import (
 )
 
 type Model struct {
-	keys utils.KeyMap
+	keys      utils.KeyMap
+	todoLists []data.TodoList
+
 	help help.Model
 	tabs tabs.Model
 }
 
 func New() Model {
+	todoLists := []data.TodoList{
+		data.FetchTodoList(),
+		data.FetchTodoList(),
+	}
+
 	m := Model{
-		keys: utils.Keys,
+		keys:      utils.Keys,
+		todoLists: todoLists,
+
 		help: help.NewModel(),
+		tabs: tabs.NewModel(&todoLists),
 	}
 
 	return m
@@ -37,7 +48,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if key.Matches(msg, m.keys.Quit) {
 			cmd = tea.Quit
 		} else if key.Matches(msg, m.keys.TabNew) {
-			tabIndex := m.tabs.AddTab("• Unsaved Tab")
+			tabIndex := m.tabs.AddTab()
 			m.tabs.SetCurrSectionId(tabIndex)
 		} else if key.Matches(msg, m.keys.TabClose) {
 			m.tabs.CloseCurrentTab()
@@ -45,7 +56,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.tabs.NextTab()
 		} else if key.Matches(msg, m.keys.TabPrev) {
 			m.tabs.PrevTab()
-		} 
+		}
 	}
 
 	return m, cmd
