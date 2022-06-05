@@ -4,6 +4,7 @@ import (
 	"charming-todo/data"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
@@ -14,7 +15,9 @@ const listHeight, defaultWidth = 14, 20
 
 var (
 	itemStyle         = lipgloss.NewStyle().PaddingLeft(4)
-	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
+	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("#a3cded"))
+	checkedItemStyle  = lipgloss.NewStyle().Strikethrough(true).StrikethroughSpaces(false).Faint(true)
+	checkedColorStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#00ff99"))
 )
 
 // Delegate
@@ -24,22 +27,33 @@ func (d itemDelegate) Height() int                               { return 1 }
 func (d itemDelegate) Spacing() int                              { return 0 }
 func (d itemDelegate) Update(msg tea.Msg, m *list.Model) tea.Cmd { return nil }
 
+// called on each list item to render displayed text
 func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
 	i, ok := listItem.(data.TodoItem)
 	if !ok {
 		return
 	}
 
-	str := fmt.Sprintf("%d. %s", index+1, i.Description)
+	indentation := strings.Repeat("   ", i.Indentation)
+
+	var str string
+	if i.Checked {
+		striked := checkedItemStyle.Render(i.Description)
+		checkmark := checkedColorStyle.Render("✓")
+
+		str = fmt.Sprintf("%s %s %s", indentation, checkmark, striked)
+	} else {
+		str = fmt.Sprintf("%s ☐ %s", indentation, i.Description)
+	}
 
 	fn := itemStyle.Render
 	if index == m.Index() {
 		fn = func(s string) string {
-			return selectedItemStyle.Render("> " + s)
+			return selectedItemStyle.Render("›› " + s)
 		}
 	}
 
-	fmt.Fprintf(w, fn(str))
+	fmt.Fprint(w, fn(str))
 }
 
 type Model struct {
@@ -54,8 +68,8 @@ func NewModel(todoList *data.TodoList) Model {
 	}
 
 	l := list.New(items, itemDelegate{}, defaultWidth, listHeight)
-	l.Title = ""
 
+	l.SetShowTitle(false)
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
 	l.SetShowHelp(false)
