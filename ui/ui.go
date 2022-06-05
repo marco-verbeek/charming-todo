@@ -12,9 +12,11 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+var todoLists []data.TodoList
+
 type Model struct {
 	keys      utils.KeyMap
-	todoLists []data.TodoList
+	todoLists *[]data.TodoList
 
 	tabs tabs.Model
 	list list.Model
@@ -22,14 +24,14 @@ type Model struct {
 }
 
 func New() Model {
-	todoLists := []data.TodoList{
+	todoLists = []data.TodoList{
 		data.FetchTodoList(),
 		data.TemplateTodoList(),
 	}
 
 	m := Model{
 		keys:      utils.Keys,
-		todoLists: todoLists,
+		todoLists: &todoLists,
 
 		tabs: tabs.NewModel(&todoLists),
 		list: list.NewModel(&todoLists[0]),
@@ -72,9 +74,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	// If tab has been changed and index is in bounds
-	if tabIndex > -1 && tabIndex < len(m.todoLists) {
-		m.list.SetTodoList(&m.todoLists[tabIndex])
+	// If tab has been changed and index is within bounds
+	if tabIndex > -1 && tabIndex < len(*m.todoLists) {
+		m.list.SetTodoList(&todoLists[tabIndex])
 	}
 
 	return m, cmd
