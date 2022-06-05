@@ -73,7 +73,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	// If tab has been changed and index is in bounds
-	if tabIndex > -1 && len(m.todoLists) > tabIndex {
+	if tabIndex > -1 && tabIndex < len(m.todoLists) {
 		m.list.SetTodoList(&m.todoLists[tabIndex])
 	}
 
