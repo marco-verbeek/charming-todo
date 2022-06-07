@@ -4,7 +4,6 @@ import (
 	"charming-todo/utils"
 
 	baseHelp "github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -16,7 +15,7 @@ type Model struct {
 func NewModel() Model {
 	return Model{
 		keys: utils.Keys,
-		help: baseHelp.NewModel(),
+		help: baseHelp.New(),
 	}
 }
 
@@ -30,21 +29,5 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	return m.help.ShortHelpView(m.collectHelpBindings())
-}
-
-// returns the keybindings to display.
-func (m Model) collectHelpBindings() []key.Binding {
-	k := m.keys
-	bindings := []key.Binding{}
-
-	bindings = append(bindings, k.Quit)
-
-	bindings = append(bindings, k.TabNew)
-	bindings = append(bindings, k.TabClose)
-
-	bindings = append(bindings, k.TabNext)
-	bindings = append(bindings, k.TabPrev)
-
-	return bindings
+	return m.help.View(m.keys)
 }

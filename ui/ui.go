@@ -71,6 +71,26 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Navigate to previous Tab
 		} else if key.Matches(msg, m.keys.TabPrev) {
 			tabIndex = m.tabs.PrevTab()
+
+			// Toggle currently selected Todo Item
+		} else if key.Matches(msg, m.keys.TodoItemToggle) {
+			m.list.ToggleCurrentItem()
+
+			// Select next todo item
+		} else if key.Matches(msg, m.keys.TodoItemNext) {
+			m.list.NextItem()
+
+			// Select previous todo item
+		} else if key.Matches(msg, m.keys.TodoItemPrev) {
+			m.list.PrevItem()
+
+			// Add indentation to currently selected Todo Item
+		} else if key.Matches(msg, m.keys.TodoItemAddIndent) {
+			m.list.AddIndent()
+
+			// Remove indentation from currently selected Todo Item
+		} else if key.Matches(msg, m.keys.TodoItemRemIndent) {
+			m.list.RemIndent()
 		}
 	}
 
@@ -86,10 +106,15 @@ func (m Model) View() string {
 	s := strings.Builder{}
 
 	s.WriteString(m.tabs.View())
-	s.WriteString("\n")
 	s.WriteString(m.list.View())
+	s.WriteString("\n")
 	s.WriteString("\n")
 	s.WriteString(m.help.View())
 
 	return s.String()
 }
+
+// TODO: changing tab should reset list index to 0
+// TODO: make sure to check an element exists at index before checking it to true/false
+// TODO: make blue even if strikethourhg and selected
+// TODO: rework spaces as indentation ^^

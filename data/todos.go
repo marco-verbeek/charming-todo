@@ -12,6 +12,8 @@ type TodoItem struct {
 	Checked     bool
 }
 
+const MAX_INDENTATION = 6
+
 func (i TodoItem) FilterValue() string { return i.Description }
 
 func FetchTodoList() TodoList {
@@ -32,7 +34,7 @@ func FetchTodoList() TodoList {
 
 func TemplateTodoList() TodoList {
 	return TodoList{
-		Title:     "• Unsaved Todo List",
+		Title:     "• Unsaved List",
 		Displayed: true,
 
 		Items: []TodoItem{
