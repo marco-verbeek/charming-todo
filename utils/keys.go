@@ -17,6 +17,7 @@ type KeyMap struct {
 	TodoItemPrev      key.Binding
 	TodoItemAddIndent key.Binding
 	TodoItemRemIndent key.Binding
+	TodoItemNew       key.Binding
 }
 
 var Keys = KeyMap{
@@ -59,6 +60,10 @@ var Keys = KeyMap{
 	),
 	TodoItemRemIndent: key.NewBinding(
 		key.WithKeys("shift+tab"),
+	),
+	TodoItemNew: key.NewBinding(
+		key.WithKeys("n"),
+		key.WithHelp("n", "new item"),
 	),
 }
 

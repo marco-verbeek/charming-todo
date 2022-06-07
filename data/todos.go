@@ -42,3 +42,11 @@ func TemplateTodoList() TodoList {
 		},
 	}
 }
+
+func TemplateTodoItem() TodoItem {
+	return TodoItem{
+		Description: "New item",
+		Indentation: 0,
+		Checked:     false,
+	}
+}

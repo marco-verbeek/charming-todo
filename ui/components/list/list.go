@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	checkedItemStyle     = lipgloss.NewStyle().Strikethrough(true).Faint(true)
+	checkedItemStyle     = lipgloss.NewStyle().Strikethrough(true).StrikethroughSpaces(false).Faint(true)
 	greenForegroundStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#00ff99"))
 	selectedColorStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#a3cded")).Bold(true)
 )
@@ -115,4 +115,14 @@ func (m *Model) PrevItem() {
 	}
 
 	m.currItemId = prevIdx
+}
+
+func (m *Model) NewItem() {
+	currentItem := &(*m.todoList).Items[m.currItemId]
+
+	newItem := data.TemplateTodoItem()
+	newItem.Indentation = currentItem.Indentation
+
+	m.currItemId++
+	m.todoList.Items = append(m.todoList.Items[:m.currItemId], append([]data.TodoItem{newItem}, m.todoList.Items[m.currItemId:]...)...)
 }

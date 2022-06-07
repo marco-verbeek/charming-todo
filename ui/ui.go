@@ -91,6 +91,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Remove indentation from currently selected Todo Item
 		} else if key.Matches(msg, m.keys.TodoItemRemIndent) {
 			m.list.RemIndent()
+
+			// Create new todo item under current selected
+		} else if key.Matches(msg, m.keys.TodoItemNew) {
+			m.list.NewItem()
 		}
 	}
 
@@ -113,3 +117,8 @@ func (m Model) View() string {
 
 	return s.String()
 }
+
+// TODO: edit selected item's text
+// TODO: create new entry (n)
+// TODO: go to elem 0 (s)tart
+// TODO: go to elem last (b)ottom
