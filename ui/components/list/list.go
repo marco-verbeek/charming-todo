@@ -2,7 +2,6 @@ package list
 
 import (
 	"charming-todo/data"
-	"fmt"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -10,10 +9,9 @@ import (
 )
 
 var (
-	itemStyle          = lipgloss.NewStyle().PaddingLeft(4)
-	checkedItemStyle   = lipgloss.NewStyle().Strikethrough(true).StrikethroughSpaces(false).Faint(true)
-	checkedColorStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("#00ff99"))
-	selectedColorStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#a3cded"))
+	checkedItemStyle     = lipgloss.NewStyle().Strikethrough(true).Faint(true)
+	greenForegroundStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#00ff99"))
+	selectedColorStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#a3cded")).Bold(true)
 )
 
 type Model struct {
@@ -36,31 +34,35 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	var listAsText string
+	s := strings.Builder{}
 
 	for idx, item := range m.todoList.Items {
-		indentation := strings.Repeat("   ", item.Indentation)
+		indentationStyle := lipgloss.NewStyle().PaddingLeft(4 * (item.Indentation + 1))
 
-		var str string
+		// Add initial indentation
+		strItem := indentationStyle.Render("")
+
+		// Add checkmark and strike description if completed
 		if item.Checked {
-			striked := checkedItemStyle.Render(item.Description)
-			checkmark := checkedColorStyle.Render("✓")
-
-			str = fmt.Sprintf("%s%s %s", indentation, checkmark, striked)
+			strikedDesc := checkedItemStyle.Render(item.Description)
+			strItem = strItem + greenForegroundStyle.Render("✓ ") + strikedDesc
 		} else {
-			str = fmt.Sprintf("%s☐ %s", indentation, item.Description)
+			strItem = strItem + "☐ " + item.Description
 		}
 
+		// Add prefix to selected item
 		if idx == m.currItemId {
-			str = selectedColorStyle.Render("›› " + itemStyle.Render(str))
+			strItem = selectedColorStyle.Render("›› " + strItem)
 		} else {
-			str = itemStyle.Render("   " + str)
+			// Compensate for the above prefix
+			strItem = "   " + strItem
 		}
 
-		listAsText += "\n" + str
+		s.WriteString("\n")
+		s.WriteString(strItem)
 	}
 
-	return listAsText
+	return s.String()
 }
 
 func (m *Model) SetTodoList(todoList *data.TodoList) {
@@ -69,8 +71,10 @@ func (m *Model) SetTodoList(todoList *data.TodoList) {
 }
 
 func (m *Model) ToggleCurrentItem() {
-	currentItem := &(*m.todoList).Items[m.currItemId]
-	currentItem.Checked = !currentItem.Checked
+	if m.currItemId >= 0 && m.currItemId < len(m.todoList.Items) {
+		currentItem := &(*m.todoList).Items[m.currItemId]
+		currentItem.Checked = !currentItem.Checked
+	}
 }
 
 func (m *Model) AddIndent() {

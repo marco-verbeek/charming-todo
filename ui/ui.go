@@ -113,8 +113,3 @@ func (m Model) View() string {
 
 	return s.String()
 }
-
-// TODO: changing tab should reset list index to 0
-// TODO: make sure to check an element exists at index before checking it to true/false
-// TODO: make blue even if strikethourhg and selected
-// TODO: rework spaces as indentation ^^
