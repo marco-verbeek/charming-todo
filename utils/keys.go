@@ -18,6 +18,7 @@ type KeyMap struct {
 	TodoItemAddIndent key.Binding
 	TodoItemRemIndent key.Binding
 	TodoItemNew       key.Binding
+	TodoItemDelete    key.Binding
 }
 
 var Keys = KeyMap{
@@ -31,7 +32,7 @@ var Keys = KeyMap{
 		key.WithHelp("ctrl+n", "new tab"),
 	),
 	TabClose: key.NewBinding(
-		key.WithKeys("ctrl+w", "x"),
+		key.WithKeys("ctrl+w"),
 		key.WithHelp("ctrl+w", "close tab"),
 	),
 	TabNext: key.NewBinding(
@@ -64,6 +65,10 @@ var Keys = KeyMap{
 	TodoItemNew: key.NewBinding(
 		key.WithKeys("n"),
 		key.WithHelp("n", "new item"),
+	),
+	TodoItemDelete: key.NewBinding(
+		key.WithKeys("x"),
+		key.WithHelp("x", "delete item"),
 	),
 }
 

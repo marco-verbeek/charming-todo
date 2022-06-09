@@ -98,6 +98,11 @@ func (m *Model) RemIndent() {
 }
 
 func (m *Model) NextItem() {
+	if len(m.todoList.Items) == 0 {
+		m.currItemId = 0
+		return
+	}
+
 	nextIdx := m.currItemId + 1
 
 	if nextIdx >= len(m.todoList.Items) {
@@ -108,6 +113,11 @@ func (m *Model) NextItem() {
 }
 
 func (m *Model) PrevItem() {
+	if len(m.todoList.Items) == 0 {
+		m.currItemId = 0
+		return
+	}
+
 	prevIdx := m.currItemId - 1
 
 	if prevIdx < 0 {
@@ -118,11 +128,30 @@ func (m *Model) PrevItem() {
 }
 
 func (m *Model) NewItem() {
-	currentItem := &(*m.todoList).Items[m.currItemId]
+	currentItemIndentation := 0
+
+	if m.currItemId > 0 && m.currItemId <= len(m.todoList.Items) {
+		currentItem := &(*m.todoList).Items[m.currItemId]
+		currentItemIndentation = currentItem.Indentation
+	}
 
 	newItem := data.TemplateTodoItem()
-	newItem.Indentation = currentItem.Indentation
+	newItem.Indentation = currentItemIndentation
+
+	if len(m.todoList.Items) == 0 {
+		m.todoList.Items = append(m.todoList.Items, newItem)
+		return
+	}
 
 	m.currItemId++
 	m.todoList.Items = append(m.todoList.Items[:m.currItemId], append([]data.TodoItem{newItem}, m.todoList.Items[m.currItemId:]...)...)
+}
+
+func (m *Model) DeleteItem() {
+	m.todoList.Items = append(m.todoList.Items[:m.currItemId], m.todoList.Items[m.currItemId+1:]...)
+	m.PrevItem()
+}
+
+func (m *Model) MarkSaved(value bool) {
+	// saved attribute in TodoList
 }

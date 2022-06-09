@@ -95,6 +95,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Create new todo item under current selected
 		} else if key.Matches(msg, m.keys.TodoItemNew) {
 			m.list.NewItem()
+
+			// Delete the currently selected todo item
+		} else if key.Matches(msg, m.keys.TodoItemDelete) {
+			m.list.DeleteItem()
+			m.list.MarkSaved(false)
 		}
 	}
 
@@ -119,6 +124,5 @@ func (m Model) View() string {
 }
 
 // TODO: edit selected item's text
-// TODO: create new entry (n)
 // TODO: go to elem 0 (s)tart
 // TODO: go to elem last (b)ottom
