@@ -11,6 +11,7 @@ type KeyMap struct {
 	TabClose key.Binding
 	TabNext  key.Binding
 	TabPrev  key.Binding
+	TabSave  key.Binding
 
 	ItemToggle    key.Binding
 	ItemNext      key.Binding
@@ -42,6 +43,10 @@ var Keys = KeyMap{
 	TabPrev: key.NewBinding(
 		key.WithKeys("left", "h"),
 		key.WithHelp("/h", "previous tab"),
+	),
+	TabSave: key.NewBinding(
+		key.WithKeys("ctrl+s"),
+		key.WithHelp("ctrl+s", "save tab"),
 	),
 
 	ItemToggle: key.NewBinding(

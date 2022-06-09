@@ -72,6 +72,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else if key.Matches(msg, m.keys.TabPrev) {
 			tabIndex = m.tabs.PrevTab()
 
+			// Navigate to previous Tab
+		} else if key.Matches(msg, m.keys.TabSave) {
+			m.list.MarkDirty(false)
+			// TODO: implement real save
+
 			// Toggle currently selected Todo Item
 		} else if key.Matches(msg, m.keys.ItemToggle) {
 			m.list.ToggleCurrentItem()
