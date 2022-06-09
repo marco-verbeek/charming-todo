@@ -103,28 +103,20 @@ func (m *Model) NextItem() {
 		return
 	}
 
-	nextIdx := m.currItemId + 1
-
-	if nextIdx >= len(m.todoList.Items) {
-		nextIdx = 0
+	if m.currItemId+1 >= len(m.todoList.Items) {
+		return
 	}
 
-	m.currItemId = nextIdx
+	m.currItemId++
 }
 
 func (m *Model) PrevItem() {
-	if len(m.todoList.Items) == 0 {
+	if len(m.todoList.Items) == 0 || m.currItemId-1 < 0 {
 		m.currItemId = 0
 		return
 	}
 
-	prevIdx := m.currItemId - 1
-
-	if prevIdx < 0 {
-		prevIdx = len(m.todoList.Items) - 1
-	}
-
-	m.currItemId = prevIdx
+	m.currItemId--
 }
 
 func (m *Model) NewItem() {
