@@ -69,7 +69,7 @@ func (m *Model) AddTab() int {
 }
 
 func (m *Model) CloseCurrentTab() int {
-	if len(*m.lists) > 0 {
+	if len(*m.lists) > 0 && m.CurrTabId >= 0 {
 		(*m.lists)[m.CurrTabId].Displayed = false
 		return m.PrevTab()
 	}

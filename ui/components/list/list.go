@@ -36,6 +36,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	s := strings.Builder{}
 
+	// If the current list is hidden, it means that we couldn't find a displayed list to display.
+	if !m.todoList.Displayed {
+		return "\nUse 'ctrl+n' to create a new Todo List or 'ctrl+o' to open an existing one."
+	}
+
 	for idx, item := range m.todoList.Items {
 		indentationStyle := lipgloss.NewStyle().PaddingLeft(4 * (item.Indentation + 1))
 
