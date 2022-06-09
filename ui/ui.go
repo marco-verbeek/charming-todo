@@ -140,5 +140,13 @@ func (m Model) View() string {
 	return s.String()
 }
 
+// Top prio
 // TODO: edit selected item's text
+
+// Mid prio
+// TODO: saving should actually save,
+// TODO: starting the TUI should load real data if exists
+
+// Low prio
 // TODO: ctrl+o should create a different list with all TodoLists (hidden or not)
+// TODO: redesign list items / tabs / help
