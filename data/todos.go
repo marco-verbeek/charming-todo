@@ -25,7 +25,7 @@ func FetchTodoList() TodoList {
 		Dirty:     false,
 
 		Items: []TodoItem{
-			{Description: "Welcome to CTO!", Indentation: 0, Checked: false},
+			{Description: "~ Welcome to Charming Todo!", Indentation: 0, Checked: false},
 			{Description: "Introduction", Indentation: 0, Checked: false},
 			{Description: "Use 'ctrl+n' to create a new list", Indentation: 1, Checked: false},
 			{Description: "Then, create new items by pressing 'n'", Indentation: 1, Checked: false},

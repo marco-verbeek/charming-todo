@@ -141,3 +141,4 @@ func (m Model) View() string {
 }
 
 // TODO: edit selected item's text
+// TODO: ctrl+o should create a different list with all TodoLists (hidden or not)
