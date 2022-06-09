@@ -140,6 +140,10 @@ func (m *Model) NewItem() {
 }
 
 func (m *Model) DeleteItem() {
+	if len(m.todoList.Items) == 0 {
+		return
+	}
+
 	m.todoList.Items = append(m.todoList.Items[:m.currItemId], m.todoList.Items[m.currItemId+1:]...)
 	m.PrevItem()
 }
