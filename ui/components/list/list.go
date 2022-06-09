@@ -119,6 +119,18 @@ func (m *Model) PrevItem() {
 	m.currItemId--
 }
 
+func (m *Model) NavToTopItem() {
+	m.currItemId = 0
+}
+
+func (m *Model) NavToBottomItem() {
+	if len(m.todoList.Items) == 0 {
+		m.currItemId = 0
+	}
+
+	m.currItemId = len(m.todoList.Items) - 1
+}
+
 func (m *Model) NewItem() {
 	currentItemIndentation := 0
 

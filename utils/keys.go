@@ -20,6 +20,9 @@ type KeyMap struct {
 	ItemRemIndent key.Binding
 	ItemNew       key.Binding
 	ItemDelete    key.Binding
+
+	ItemTop    key.Binding
+	ItemBottom key.Binding
 }
 
 var Keys = KeyMap{
@@ -74,6 +77,15 @@ var Keys = KeyMap{
 	ItemDelete: key.NewBinding(
 		key.WithKeys("x"),
 		key.WithHelp("x", "delete item"),
+	),
+
+	ItemTop: key.NewBinding(
+		key.WithKeys("t"),
+		key.WithHelp("t", "navigate to top item"),
+	),
+	ItemBottom: key.NewBinding(
+		key.WithKeys("b"),
+		key.WithHelp("b", "navigate to bottom item"),
 	),
 }
 

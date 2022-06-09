@@ -109,6 +109,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else if key.Matches(msg, m.keys.ItemDelete) {
 			m.list.DeleteItem()
 			m.list.MarkDirty(true)
+
+			// Navigate to top item
+		} else if key.Matches(msg, m.keys.ItemTop) {
+			m.list.NavToTopItem()
+
+			// Navigate to bottom item
+		} else if key.Matches(msg, m.keys.ItemBottom) {
+			m.list.NavToBottomItem()
 		}
 	}
 
@@ -133,5 +141,3 @@ func (m Model) View() string {
 }
 
 // TODO: edit selected item's text
-// TODO: go to elem 0 (s)tart
-// TODO: go to elem last (b)ottom
