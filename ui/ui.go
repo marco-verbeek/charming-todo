@@ -73,35 +73,35 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			tabIndex = m.tabs.PrevTab()
 
 			// Toggle currently selected Todo Item
-		} else if key.Matches(msg, m.keys.TodoItemToggle) {
+		} else if key.Matches(msg, m.keys.ItemToggle) {
 			m.list.ToggleCurrentItem()
 			m.list.MarkDirty(true)
 
 			// Select next todo item
-		} else if key.Matches(msg, m.keys.TodoItemNext) {
+		} else if key.Matches(msg, m.keys.ItemNext) {
 			m.list.NextItem()
 
 			// Select previous todo item
-		} else if key.Matches(msg, m.keys.TodoItemPrev) {
+		} else if key.Matches(msg, m.keys.ItemPrev) {
 			m.list.PrevItem()
 
 			// Add indentation to currently selected Todo Item
-		} else if key.Matches(msg, m.keys.TodoItemAddIndent) {
+		} else if key.Matches(msg, m.keys.ItemAddIndent) {
 			m.list.AddIndent()
 			m.list.MarkDirty(true)
 
 			// Remove indentation from currently selected Todo Item
-		} else if key.Matches(msg, m.keys.TodoItemRemIndent) {
+		} else if key.Matches(msg, m.keys.ItemRemIndent) {
 			m.list.RemIndent()
 			m.list.MarkDirty(true)
 
 			// Create new todo item under current selected
-		} else if key.Matches(msg, m.keys.TodoItemNew) {
+		} else if key.Matches(msg, m.keys.ItemNew) {
 			m.list.NewItem()
 			m.list.MarkDirty(true)
 
 			// Delete the currently selected todo item
-		} else if key.Matches(msg, m.keys.TodoItemDelete) {
+		} else if key.Matches(msg, m.keys.ItemDelete) {
 			m.list.DeleteItem()
 			m.list.MarkDirty(true)
 		}

@@ -12,13 +12,13 @@ type KeyMap struct {
 	TabNext  key.Binding
 	TabPrev  key.Binding
 
-	TodoItemToggle    key.Binding
-	TodoItemNext      key.Binding
-	TodoItemPrev      key.Binding
-	TodoItemAddIndent key.Binding
-	TodoItemRemIndent key.Binding
-	TodoItemNew       key.Binding
-	TodoItemDelete    key.Binding
+	ItemToggle    key.Binding
+	ItemNext      key.Binding
+	ItemPrev      key.Binding
+	ItemAddIndent key.Binding
+	ItemRemIndent key.Binding
+	ItemNew       key.Binding
+	ItemDelete    key.Binding
 }
 
 var Keys = KeyMap{
@@ -44,29 +44,29 @@ var Keys = KeyMap{
 		key.WithHelp("/h", "previous tab"),
 	),
 
-	TodoItemToggle: key.NewBinding(
+	ItemToggle: key.NewBinding(
 		key.WithKeys("enter"),
 		key.WithHelp("enter", "check item"),
 	),
-	TodoItemNext: key.NewBinding(
+	ItemNext: key.NewBinding(
 		key.WithKeys("j", "down"),
 		key.WithHelp("↓/j", "next item"),
 	),
-	TodoItemPrev: key.NewBinding(
+	ItemPrev: key.NewBinding(
 		key.WithKeys("k", "up"),
 		key.WithHelp("↑/k", "prev item"),
 	),
-	TodoItemAddIndent: key.NewBinding(
+	ItemAddIndent: key.NewBinding(
 		key.WithKeys("tab"),
 	),
-	TodoItemRemIndent: key.NewBinding(
+	ItemRemIndent: key.NewBinding(
 		key.WithKeys("shift+tab"),
 	),
-	TodoItemNew: key.NewBinding(
+	ItemNew: key.NewBinding(
 		key.WithKeys("n"),
 		key.WithHelp("n", "new item"),
 	),
-	TodoItemDelete: key.NewBinding(
+	ItemDelete: key.NewBinding(
 		key.WithKeys("x"),
 		key.WithHelp("x", "delete item"),
 	),
@@ -74,15 +74,15 @@ var Keys = KeyMap{
 
 func (k KeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
-		{k.TodoItemPrev, k.TodoItemNext, k.TabNext, k.TabPrev},
+		{k.ItemPrev, k.ItemNext, k.TabNext, k.TabPrev},
 		{k.TabNew, k.TabClose, k.Quit},
 	}
 }
 
 func (k KeyMap) ShortHelp() []key.Binding {
 	return []key.Binding{
-		k.TodoItemPrev,
-		k.TodoItemNext,
+		k.ItemPrev,
+		k.ItemNext,
 		k.TabNext,
 		k.TabPrev,
 		k.TabNew,
