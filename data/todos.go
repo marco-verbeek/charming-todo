@@ -25,12 +25,14 @@ func FetchTodoList() TodoList {
 		Dirty:     false,
 
 		Items: []TodoItem{
-			{Description: "Learn Go!", Indentation: 0, Checked: false},
-			{Description: "Read documentation", Indentation: 1, Checked: true},
-			{Description: "Write Charming Todo", Indentation: 1, Checked: false},
-			{Description: "Core logic", Indentation: 2, Checked: true},
-			{Description: "Advanced logic", Indentation: 2, Checked: false},
-			{Description: "Have fun", Indentation: 0, Checked: true},
+			{Description: "Welcome to CTO!", Indentation: 0, Checked: false},
+			{Description: "Introduction", Indentation: 0, Checked: false},
+			{Description: "Use 'ctrl+n' to create a new list", Indentation: 1, Checked: false},
+			{Description: "Then, create new items by pressing 'n'", Indentation: 1, Checked: false},
+			{Description: "Pressing 'enter' will toggle the item's checkmark", Indentation: 1, Checked: false},
+			{Description: "Finally, hit ctrl+s to save it!", Indentation: 2, Checked: false},
+			{Description: "You can indent the list with 'tab' and 'shift+tab'.", Indentation: 0, Checked: false},
+			{Description: "Have fun!", Indentation: 0, Checked: false},
 		},
 	}
 }
