@@ -148,6 +148,6 @@ func (m *Model) DeleteItem() {
 	m.PrevItem()
 }
 
-func (m *Model) MarkSaved(value bool) {
-	// saved attribute in TodoList
+func (m *Model) MarkDirty(value bool) {
+	m.todoList.Dirty = value
 }

@@ -75,6 +75,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Toggle currently selected Todo Item
 		} else if key.Matches(msg, m.keys.TodoItemToggle) {
 			m.list.ToggleCurrentItem()
+			m.list.MarkDirty(true)
 
 			// Select next todo item
 		} else if key.Matches(msg, m.keys.TodoItemNext) {
@@ -87,19 +88,22 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Add indentation to currently selected Todo Item
 		} else if key.Matches(msg, m.keys.TodoItemAddIndent) {
 			m.list.AddIndent()
+			m.list.MarkDirty(true)
 
 			// Remove indentation from currently selected Todo Item
 		} else if key.Matches(msg, m.keys.TodoItemRemIndent) {
 			m.list.RemIndent()
+			m.list.MarkDirty(true)
 
 			// Create new todo item under current selected
 		} else if key.Matches(msg, m.keys.TodoItemNew) {
 			m.list.NewItem()
+			m.list.MarkDirty(true)
 
 			// Delete the currently selected todo item
 		} else if key.Matches(msg, m.keys.TodoItemDelete) {
 			m.list.DeleteItem()
-			m.list.MarkSaved(false)
+			m.list.MarkDirty(true)
 		}
 	}
 

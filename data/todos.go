@@ -3,6 +3,7 @@ package data
 type TodoList struct {
 	Title     string
 	Displayed bool
+	Dirty     bool
 	Items     []TodoItem
 }
 
@@ -13,6 +14,7 @@ type TodoItem struct {
 }
 
 const MAX_INDENTATION = 6
+const DIRTY_PREFIX = "• "
 
 func (i TodoItem) FilterValue() string { return i.Description }
 
@@ -20,6 +22,7 @@ func FetchTodoList() TodoList {
 	return TodoList{
 		Title:     "My Todo",
 		Displayed: true,
+		Dirty:     false,
 
 		Items: []TodoItem{
 			{Description: "Learn Go!", Indentation: 0, Checked: false},
@@ -34,8 +37,9 @@ func FetchTodoList() TodoList {
 
 func TemplateTodoList() TodoList {
 	return TodoList{
-		Title:     "• Unsaved List",
+		Title:     "Unsaved List",
 		Displayed: true,
+		Dirty:     true,
 
 		Items: []TodoItem{
 			{Description: "Item", Indentation: 0, Checked: false},

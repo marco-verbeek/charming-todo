@@ -31,10 +31,16 @@ func (m Model) View() string {
 			continue
 		}
 
+		title := list.Title
+
+		if list.Dirty {
+			title = data.DIRTY_PREFIX + title
+		}
+
 		if m.CurrTabId == i {
-			tabs = append(tabs, activeTab.Render(list.Title))
+			tabs = append(tabs, activeTab.Render(title))
 		} else {
-			tabs = append(tabs, tab.Render(list.Title))
+			tabs = append(tabs, tab.Render(title))
 		}
 	}
 
