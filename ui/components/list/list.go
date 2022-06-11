@@ -16,15 +16,18 @@ var (
 )
 
 type Model struct {
-	todoList   *data.TodoList
-	currItemId int
+	todoList *data.TodoList
+	uiMode   *data.Mode
 
+	currItemId int
 	textCursor [2]int
 }
 
-func NewModel(todoList *data.TodoList) Model {
+func NewModel(todoList *data.TodoList, uiMode *data.Mode) Model {
 	return Model{
-		todoList:   todoList,
+		todoList: todoList,
+		uiMode:   uiMode,
+
 		textCursor: [2]int{0, 1},
 	}
 }
@@ -58,7 +61,7 @@ func (m Model) View() string {
 			strItem = strItem + greenForegroundStyle.Render("✓ ") + strikedDesc
 		} else {
 			// If text is being selected
-			if isSelected && (m.textCursor[0] > 0 || m.textCursor[1] > 0) {
+			if isSelected && *m.uiMode == data.Edit && (m.textCursor[0] > 0 || m.textCursor[1] > 0) {
 				minIdx := min(m.textCursor[0], m.textCursor[1])
 				maxIdx := max(m.textCursor[0], m.textCursor[1])
 
@@ -71,16 +74,28 @@ func (m Model) View() string {
 			}
 		}
 
-		// Add prefix to selected item
+		// Add prefixes to selected item
 		if isSelected {
-			strItem = selectedColorStyle.Render("›› " + strItem)
+			prefixes := "›› "
+
+			// Add 'E' prefix to item if in edit mode
+			if *m.uiMode == data.Edit {
+				prefixes += "E "
+			} else {
+				prefixes += "  "
+			}
+
+			strItem = selectedColorStyle.Render(prefixes + strItem)
 		} else {
-			// Compensate for the above prefix
-			strItem = "   " + strItem
+			strItem = strings.Repeat(" ", 5) + strItem
 		}
 
 		s.WriteString("\n")
 		s.WriteString(strItem)
+	}
+
+	if *m.uiMode == data.Edit {
+		s.WriteString("\n\nCurrently in Edit Mode. Use 'enter' to save edits, 'esc' to cancel edits.")
 	}
 
 	return s.String()
@@ -189,6 +204,23 @@ func (m *Model) DeleteItem() {
 
 func (m *Model) MarkDirty(value bool) {
 	m.todoList.Dirty = value
+}
+
+func (m *Model) MoveCursor(amount int, selectText bool) {
+	// let's ignore the select for a first iteration
+	// [0,1]
+
+	if m.textCursor[0]+amount > 0 {
+		m.textCursor[0] += amount
+	} else {
+		m.textCursor[0] = 0
+	}
+
+	if m.textCursor[1]+amount > 0 {
+		m.textCursor[1] += amount
+	} else {
+		m.textCursor[1] = 1
+	}
 }
 
 func min(x, y int) int {

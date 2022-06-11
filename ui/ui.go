@@ -13,6 +13,7 @@ import (
 )
 
 var todoLists []data.TodoList
+var mode data.Mode
 
 type Model struct {
 	keys      utils.KeyMap
@@ -34,7 +35,7 @@ func New() Model {
 		todoLists: &todoLists,
 
 		tabs: tabs.NewModel(&todoLists),
-		list: list.NewModel(&todoLists[0]),
+		list: list.NewModel(&todoLists[0], &mode),
 		help: help.NewModel(),
 	}
 
@@ -49,74 +50,112 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	tabIndex := -1
 
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		// Quit app
-		if key.Matches(msg, m.keys.Quit) {
-			cmd = tea.Quit
+	switch mode {
+	case data.Nav:
+		switch msg := msg.(type) {
+		case tea.KeyMsg:
+			// Quit app
+			if key.Matches(msg, m.keys.Quit) {
+				cmd = tea.Quit
 
-			// Create a new Tab
-		} else if key.Matches(msg, m.keys.TabNew) {
-			tabIndex = m.tabs.AddTab()
-			m.tabs.SetCurrSectionId(tabIndex)
+				// Create a new Tab
+			} else if key.Matches(msg, m.keys.TabNew) {
+				tabIndex = m.tabs.AddTab()
+				m.tabs.SetCurrSectionId(tabIndex)
 
-			// Close the current Tab
-		} else if key.Matches(msg, m.keys.TabClose) {
-			tabIndex = m.tabs.CloseCurrentTab()
+				// Close the current Tab
+			} else if key.Matches(msg, m.keys.TabClose) {
+				tabIndex = m.tabs.CloseCurrentTab()
 
-			// Navigate to next Tab
-		} else if key.Matches(msg, m.keys.TabNext) {
-			tabIndex = m.tabs.NextTab()
+				// Navigate to next Tab
+			} else if key.Matches(msg, m.keys.TabNext) {
+				tabIndex = m.tabs.NextTab()
 
-			// Navigate to previous Tab
-		} else if key.Matches(msg, m.keys.TabPrev) {
-			tabIndex = m.tabs.PrevTab()
+				// Navigate to previous Tab
+			} else if key.Matches(msg, m.keys.TabPrev) {
+				tabIndex = m.tabs.PrevTab()
 
-			// Navigate to previous Tab
-		} else if key.Matches(msg, m.keys.TabSave) {
-			m.list.MarkDirty(false)
-			// TODO: implement real save
+				// Navigate to previous Tab
+			} else if key.Matches(msg, m.keys.TabSave) {
+				m.list.MarkDirty(false)
+				// TODO: implement real save
 
-			// Toggle currently selected Todo Item
-		} else if key.Matches(msg, m.keys.ItemToggle) {
-			m.list.ToggleCurrentItem()
-			m.list.MarkDirty(true)
+				// Toggle currently selected Todo Item
+			} else if key.Matches(msg, m.keys.ItemToggle) {
+				m.list.ToggleCurrentItem()
+				m.list.MarkDirty(true)
 
-			// Select next todo item
-		} else if key.Matches(msg, m.keys.ItemNext) {
-			m.list.NextItem()
+				// Select next todo item
+			} else if key.Matches(msg, m.keys.ItemNext) {
+				m.list.NextItem()
 
-			// Select previous todo item
-		} else if key.Matches(msg, m.keys.ItemPrev) {
-			m.list.PrevItem()
+				// Select previous todo item
+			} else if key.Matches(msg, m.keys.ItemPrev) {
+				m.list.PrevItem()
 
-			// Add indentation to currently selected Todo Item
-		} else if key.Matches(msg, m.keys.ItemAddIndent) {
-			m.list.AddIndent()
-			m.list.MarkDirty(true)
+				// Add indentation to currently selected Todo Item
+			} else if key.Matches(msg, m.keys.ItemAddIndent) {
+				m.list.AddIndent()
+				m.list.MarkDirty(true)
 
-			// Remove indentation from currently selected Todo Item
-		} else if key.Matches(msg, m.keys.ItemRemIndent) {
-			m.list.RemIndent()
-			m.list.MarkDirty(true)
+				// Remove indentation from currently selected Todo Item
+			} else if key.Matches(msg, m.keys.ItemRemIndent) {
+				m.list.RemIndent()
+				m.list.MarkDirty(true)
 
-			// Create new todo item under current selected
-		} else if key.Matches(msg, m.keys.ItemNew) {
-			m.list.NewItem()
-			m.list.MarkDirty(true)
+				// Create new todo item under current selected
+			} else if key.Matches(msg, m.keys.ItemNew) {
+				m.list.NewItem()
+				m.list.MarkDirty(true)
 
-			// Delete the currently selected todo item
-		} else if key.Matches(msg, m.keys.ItemDelete) {
-			m.list.DeleteItem()
-			m.list.MarkDirty(true)
+				// Delete the currently selected todo item
+			} else if key.Matches(msg, m.keys.ItemDelete) {
+				m.list.DeleteItem()
+				m.list.MarkDirty(true)
 
-			// Navigate to top item
-		} else if key.Matches(msg, m.keys.ItemTop) {
-			m.list.NavToTopItem()
+				// Navigate to top item
+			} else if key.Matches(msg, m.keys.ItemTop) {
+				m.list.NavToTopItem()
 
-			// Navigate to bottom item
-		} else if key.Matches(msg, m.keys.ItemBottom) {
-			m.list.NavToBottomItem()
+				// Navigate to bottom item
+			} else if key.Matches(msg, m.keys.ItemBottom) {
+				m.list.NavToBottomItem()
+
+				// Enable edit mode for current todo item
+			} else if key.Matches(msg, m.keys.EditModeStart) {
+				mode = data.Edit
+			}
+		}
+
+	case data.Edit:
+		switch msg := msg.(type) {
+		case tea.KeyMsg:
+			// Quit app
+			if key.Matches(msg, m.keys.Quit) {
+				cmd = tea.Quit
+
+				// Cancel edit mode and cancel edits
+			} else if key.Matches(msg, m.keys.EditModeCancel) {
+				mode = data.Nav
+				// TODO: m.list.revertChanges()
+
+				// Save edits and go back to Nav mode
+			} else if key.Matches(msg, m.keys.EditModeSave) {
+				mode = data.Nav
+				// TODO: m.list.applyChanges()
+
+				//
+			} else if key.Matches(msg, m.keys.EditModeLeft) {
+				m.list.MoveCursor(-1, false)
+
+				//
+			} else if key.Matches(msg, m.keys.EditModeRight) {
+				m.list.MoveCursor(1, false)
+
+				//
+			}
+
+			// TODO: shift left, shift right, delete, maj
 		}
 	}
 

@@ -23,11 +23,17 @@ type KeyMap struct {
 
 	ItemTop    key.Binding
 	ItemBottom key.Binding
+
+	EditModeStart  key.Binding
+	EditModeCancel key.Binding
+	EditModeSave   key.Binding
+	EditModeLeft   key.Binding
+	EditModeRight  key.Binding
 }
 
 var Keys = KeyMap{
 	Quit: key.NewBinding(
-		key.WithKeys("ctrl+c", "esc", "q"),
+		key.WithKeys("ctrl+c", "q"),
 		key.WithHelp("q", "quit"),
 	),
 
@@ -86,6 +92,25 @@ var Keys = KeyMap{
 	ItemBottom: key.NewBinding(
 		key.WithKeys("b"),
 		key.WithHelp("b", "navigate to bottom item"),
+	),
+
+	EditModeStart: key.NewBinding(
+		key.WithKeys("e"),
+		key.WithHelp("e", "edit todo item"),
+	),
+	EditModeCancel: key.NewBinding(
+		key.WithKeys("esc"),
+		key.WithHelp("esc", "cancel edit mode"),
+	),
+	EditModeSave: key.NewBinding(
+		key.WithKeys("enter"),
+		key.WithHelp("enter", "save current edits"),
+	),
+	EditModeRight: key.NewBinding(
+		key.WithKeys("right"),
+	),
+	EditModeLeft: key.NewBinding(
+		key.WithKeys("left"),
 	),
 }
 
