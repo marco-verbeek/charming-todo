@@ -144,11 +144,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				mode = data.Nav
 				// TODO: m.list.applyChanges()
 
-				//
+				// Move cursor to left
 			} else if key.Matches(msg, m.keys.EditModeLeft) {
 				m.list.MoveCursor(-1, false)
 
-				//
+				// Move cursor to right
 			} else if key.Matches(msg, m.keys.EditModeRight) {
 				m.list.MoveCursor(1, false)
 
