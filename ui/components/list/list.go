@@ -12,16 +12,20 @@ var (
 	checkedItemStyle     = lipgloss.NewStyle().Strikethrough(true).StrikethroughSpaces(false).Faint(true)
 	greenForegroundStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#00ff99"))
 	selectedColorStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#a3cded")).Bold(true)
+	selectedTextStyle    = lipgloss.NewStyle().Background(lipgloss.Color("#4c6a8e"))
 )
 
 type Model struct {
 	todoList   *data.TodoList
 	currItemId int
+
+	textCursor [2]int
 }
 
 func NewModel(todoList *data.TodoList) Model {
 	return Model{
-		todoList: todoList,
+		todoList:   todoList,
+		textCursor: [2]int{0, 1},
 	}
 }
 
@@ -34,14 +38,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	s := strings.Builder{}
-
 	// If the current list is hidden, it means that we couldn't find a displayed list to display.
 	if !m.todoList.Displayed {
 		return "\nUse 'ctrl+n' to create a new Todo List or 'ctrl+o' to open an existing one."
 	}
 
+	s := strings.Builder{}
+
 	for idx, item := range m.todoList.Items {
+		isSelected := idx == m.currItemId
 		indentationStyle := lipgloss.NewStyle().PaddingLeft(4 * (item.Indentation + 1))
 
 		// Add initial indentation
@@ -52,11 +57,22 @@ func (m Model) View() string {
 			strikedDesc := checkedItemStyle.Render(item.Description)
 			strItem = strItem + greenForegroundStyle.Render("✓ ") + strikedDesc
 		} else {
-			strItem = strItem + "☐ " + item.Description
+			// If text is being selected
+			if isSelected && (m.textCursor[0] > 0 || m.textCursor[1] > 0) {
+				minIdx := min(m.textCursor[0], m.textCursor[1])
+				maxIdx := max(m.textCursor[0], m.textCursor[1])
+
+				minIdx = max(0, minIdx)
+				maxIdx = min(maxIdx, len(item.Description))
+
+				strItem = strItem + "☐ " + item.Description[:minIdx] + selectedTextStyle.Render(item.Description[minIdx:maxIdx]) + item.Description[maxIdx:]
+			} else {
+				strItem = strItem + "☐ " + item.Description
+			}
 		}
 
 		// Add prefix to selected item
-		if idx == m.currItemId {
+		if isSelected {
 			strItem = selectedColorStyle.Render("›› " + strItem)
 		} else {
 			// Compensate for the above prefix
@@ -70,9 +86,15 @@ func (m Model) View() string {
 	return s.String()
 }
 
+func (m *Model) resetSelectedText() {
+	m.textCursor = [2]int{0, 1}
+}
+
 func (m *Model) SetTodoList(todoList *data.TodoList) {
 	m.todoList = todoList
 	m.currItemId = 0
+
+	m.resetSelectedText()
 }
 
 func (m *Model) ToggleCurrentItem() {
@@ -167,4 +189,20 @@ func (m *Model) DeleteItem() {
 
 func (m *Model) MarkDirty(value bool) {
 	m.todoList.Dirty = value
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+
+	return y
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+
+	return y
 }
