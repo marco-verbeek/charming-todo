@@ -2,6 +2,7 @@ package list
 
 import (
 	"charming-todo/data"
+	"fmt"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -98,7 +99,7 @@ func (m Model) View() string {
 		s.WriteString("\n\nCurrently in Edit Mode. Use 'enter' to save edits, 'esc' to cancel edits.")
 	}
 
-	return s.String()
+	return s.String() + "\n" + fmt.Sprintf("%d/%d", m.textCursor[0], m.textCursor[1])
 }
 
 func (m *Model) resetSelectedText() {
@@ -208,7 +209,8 @@ func (m *Model) MarkDirty(value bool) {
 
 func (m *Model) MoveCursor(amount int, selectText bool) {
 	// let's ignore the select for a first iteration
-	// [0,1]
+
+	currentItem := &(*m.todoList).Items[m.currItemId]
 
 	if m.textCursor[0]+amount > 0 {
 		m.textCursor[0] += amount
@@ -220,6 +222,13 @@ func (m *Model) MoveCursor(amount int, selectText bool) {
 		m.textCursor[1] += amount
 	} else {
 		m.textCursor[1] = 1
+	}
+
+	m.textCursor[0] = min(max(0, m.textCursor[0]), len(currentItem.Description))
+	m.textCursor[1] = max(0, min(len(currentItem.Description), m.textCursor[1]))
+
+	if m.textCursor[0] == m.textCursor[1] {
+		m.textCursor[0] = m.textCursor[1] - 1
 	}
 }
 
