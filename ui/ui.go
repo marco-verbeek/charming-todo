@@ -124,6 +124,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				// Enable edit mode for current todo item
 			} else if key.Matches(msg, m.keys.EditModeStart) {
 				mode = data.Edit
+				m.list.ListenChanges()
 			}
 		}
 
@@ -134,15 +135,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if key.Matches(msg, m.keys.Quit) {
 				cmd = tea.Quit
 
-				// Cancel edit mode and cancel edits
+				// Cancel edit mode (current edits will be overwritten next EditMode Toggle)
 			} else if key.Matches(msg, m.keys.EditModeCancel) {
 				mode = data.Nav
-				// TODO: m.list.revertChanges()
 
 				// Save edits and go back to Nav mode
 			} else if key.Matches(msg, m.keys.EditModeSave) {
 				mode = data.Nav
-				// TODO: m.list.applyChanges()
+				m.list.ApplyChanges()
 
 				// Move cursor to left
 			} else if key.Matches(msg, m.keys.EditModeLeft) {
@@ -152,10 +152,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else if key.Matches(msg, m.keys.EditModeRight) {
 				m.list.MoveCursor(1, false)
 
-				//
+				// Delete selection
+			} else if key.Matches(msg, m.keys.EditModeDel) {
+				m.list.DeleteSelectedText()
 			}
 
-			// TODO: shift left, shift right, delete, maj
+			switch msg.Type {
+			case tea.KeyRunes, tea.KeySpace:
+				runes := string(msg.Runes)
+				m.list.Write(runes)
+			}
+
+			// TODO: shift left, shift right, maj
 		}
 	}
 

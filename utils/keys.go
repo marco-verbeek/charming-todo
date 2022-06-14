@@ -29,6 +29,7 @@ type KeyMap struct {
 	EditModeSave   key.Binding
 	EditModeLeft   key.Binding
 	EditModeRight  key.Binding
+	EditModeDel    key.Binding
 }
 
 var Keys = KeyMap{
@@ -111,6 +112,9 @@ var Keys = KeyMap{
 	),
 	EditModeLeft: key.NewBinding(
 		key.WithKeys("left"),
+	),
+	EditModeDel: key.NewBinding(
+		key.WithKeys("del", "delete", "backspace"),
 	),
 }
 

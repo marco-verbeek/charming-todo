@@ -22,6 +22,8 @@ type Model struct {
 
 	currItemId int
 	textCursor [2]int
+
+	editedDesc string
 }
 
 func NewModel(todoList *data.TodoList, uiMode *data.Mode) Model {
@@ -41,6 +43,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
+// TODO: refactor this entire logic.
+// Cleanup includes making use of lipgloss' SetString()
+// See: https://github.com/charmbracelet/lipgloss/blob/a86f21a0ae430173036c5b6158b0654af447e5a1/example/main.go#L134
 func (m Model) View() string {
 	// If the current list is hidden, it means that we couldn't find a displayed list to display.
 	if !m.todoList.Displayed {
@@ -67,9 +72,9 @@ func (m Model) View() string {
 				maxIdx := max(m.textCursor[0], m.textCursor[1])
 
 				minIdx = max(0, minIdx)
-				maxIdx = min(maxIdx, len(item.Description))
+				maxIdx = min(maxIdx, len(m.editedDesc))
 
-				strItem = strItem + "☐ " + item.Description[:minIdx] + selectedTextStyle.Render(item.Description[minIdx:maxIdx]) + item.Description[maxIdx:]
+				strItem = strItem + "☐ " + m.editedDesc[:minIdx] + selectedTextStyle.Render(m.editedDesc[minIdx:maxIdx]) + m.editedDesc[maxIdx:]
 			} else {
 				strItem = strItem + "☐ " + item.Description
 			}
@@ -99,7 +104,7 @@ func (m Model) View() string {
 		s.WriteString("\n\nCurrently in Edit Mode. Use 'enter' to save edits, 'esc' to cancel edits.")
 	}
 
-	return s.String() + "\n" + fmt.Sprintf("%d/%d", m.textCursor[0], m.textCursor[1])
+	return s.String() + "\n" + fmt.Sprintf("%d/%d", m.textCursor[0], m.textCursor[1]) + "\n" + fmt.Sprintf("del: %d/%d", max(0, m.textCursor[0]-1), min(len(m.editedDesc)-1, m.textCursor[1]))
 }
 
 func (m *Model) resetSelectedText() {
@@ -207,29 +212,47 @@ func (m *Model) MarkDirty(value bool) {
 	m.todoList.Dirty = value
 }
 
+// TODO: implement text selection bool
+// TODO: allow to go one further in order to be able to remove the last char ^^
 func (m *Model) MoveCursor(amount int, selectText bool) {
-	// let's ignore the select for a first iteration
+	m.textCursor[0] += amount
+	m.textCursor[1] += amount
 
-	currentItem := &(*m.todoList).Items[m.currItemId]
-
-	if m.textCursor[0]+amount > 0 {
-		m.textCursor[0] += amount
-	} else {
-		m.textCursor[0] = 0
-	}
-
-	if m.textCursor[1]+amount > 0 {
-		m.textCursor[1] += amount
-	} else {
-		m.textCursor[1] = 1
-	}
-
-	m.textCursor[0] = min(max(0, m.textCursor[0]), len(currentItem.Description))
-	m.textCursor[1] = max(0, min(len(currentItem.Description), m.textCursor[1]))
+	m.textCursor[0] = min(max(0, m.textCursor[0]), len(m.editedDesc))
+	m.textCursor[1] = max(0, min(m.textCursor[1], len(m.editedDesc)))
 
 	if m.textCursor[0] == m.textCursor[1] {
-		m.textCursor[0] = m.textCursor[1] - 1
+		m.textCursor[1] = m.textCursor[0] + 1
 	}
+}
+
+func (m *Model) ListenChanges() {
+	currentItem := &(*m.todoList).Items[m.currItemId]
+	m.editedDesc = currentItem.Description
+}
+
+func (m *Model) ApplyChanges() {
+	currentItem := &(*m.todoList).Items[m.currItemId]
+
+	if m.editedDesc != currentItem.Description {
+		m.MarkDirty(true)
+	}
+
+	currentItem.Description = m.editedDesc
+}
+
+func (m *Model) DeleteSelectedText() {
+	fromIdx := max(0, m.textCursor[0]-1)
+	toIdx := min(len(m.editedDesc)-1, m.textCursor[1])
+
+	m.editedDesc = m.editedDesc[:fromIdx] + m.editedDesc[toIdx:]
+}
+
+func (m *Model) Write(text string) {
+	cursorIdx := min(m.textCursor[0], m.textCursor[1])
+
+	m.editedDesc = m.editedDesc[:cursorIdx+1] + text + m.editedDesc[cursorIdx+1:]
+	m.MoveCursor(1, false)
 }
 
 func min(x, y int) int {
