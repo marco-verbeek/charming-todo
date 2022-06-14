@@ -2,7 +2,6 @@ package list
 
 import (
 	"charming-todo/data"
-	"fmt"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -104,7 +103,7 @@ func (m Model) View() string {
 		s.WriteString("\n\nCurrently in Edit Mode. Use 'enter' to save edits, 'esc' to cancel edits.")
 	}
 
-	return s.String() + "\n" + fmt.Sprintf("%d/%d", m.textCursor[0], m.textCursor[1]) + "\n" + fmt.Sprintf("del: %d/%d", max(0, m.textCursor[0]-1), min(len(m.editedDesc)-1, m.textCursor[1]))
+	return s.String()
 }
 
 func (m *Model) resetSelectedText() {
