@@ -36,4 +36,5 @@ The Elm architecture (implemented by Charm components) is lovely, I hope to enco
 2. More keyboard shortcuts (CTRL+V, HOME, END, CTRL+SHIFT+left/right, ...),
 3. Dialog that would allow opening previously closed Todo lists,
 5. Tests
+6. A LOT of code cleanup and documentation
   
